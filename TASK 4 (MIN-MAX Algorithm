@@ -1,0 +1,139 @@
+AIM : To implement MIN-MAX Graph Algorithm
+ program :
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F', 'G'],
+
+    'D': ['H', 'I'],
+    'E': ['J', 'K'],
+    'F': ['L', 'M'],
+    'G': ['N', 'O'],
+
+    'H': [3],
+    'I': [5],
+    'J': [2],
+    'K': [9],
+    'L': [12],
+    'M': [5],
+    'N': [23],
+    'O': [23]
+}
+
+
+# Minimax function
+def minimax(node, depth, maximizing_player):
+
+    # If the node contains a numerical value,
+    # it is a terminal/leaf node
+    if isinstance(node, int):
+        return node
+
+    # Depth limit reached
+    if depth == 0:
+        return 0
+
+    # Maximizing player's turn
+    if maximizing_player:
+
+        best_value = float('-inf')
+
+        for child in graph[node]:
+
+            value = minimax(
+                child,
+                depth - 1,
+                False
+            )
+
+            best_value = max(best_value, value)
+
+        return best_value
+
+    # Minimizing player's turn
+    else:
+
+        best_value = float('inf')
+
+        for child in graph[node]:
+
+            value = minimax(
+                child,
+                depth - 1,
+                True
+            )
+
+            best_value = min(best_value, value)
+
+        return best_value
+
+
+# Function to display the game tree
+def display_graph(node, level=0):
+
+    print("  " * level + str(node))
+
+    if isinstance(node, str):
+
+        for child in graph[node]:
+            display_graph(child, level + 1)
+
+
+# Main program
+print("MINIMAX ALGORITHM USING GAME TREE")
+
+
+print("\nGame Tree:")
+display_graph('A')
+
+
+# Calculate optimal value
+optimal_value = minimax(
+    'A',
+    depth=4,
+    maximizing_player=True
+)
+
+
+print("\nMinimax Calculation:")
+print("Root Node : A")
+print("Player at Root : MAX")
+print("Depth : 4")
+
+print("\nOptimal value at Root =", optimal_value)
+
+OUTPUT : 
+MINIMAX ALGORITHM USING GAME TREE
+
+
+Game Tree:
+A
+  B
+    D
+      H
+        3
+      I
+        5
+    E
+      J
+        2
+      K
+        9
+  C
+    F
+      L
+        12
+      M
+        5
+    G
+      N
+        23
+      O
+        23
+
+Minimax Calculation:
+Root Node : A
+Player at Root : MAX
+Depth : 4
+
+Optimal value at Root = 12
