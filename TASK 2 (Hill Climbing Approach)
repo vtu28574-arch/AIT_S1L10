@@ -1,0 +1,69 @@
+AIM : To perform Hill Climbing Approach 
+
+program : 
+
+def heuristic(state, goal):
+    return sum(state[i] != goal[i] and state[i] != 0
+               for i in range(9))
+
+def neighbors(state):
+    result = []
+    pos = state.index(0)
+    row, col = divmod(pos, 3)
+
+    moves = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    for dr, dc in moves:
+        r, c = row + dr, col + dc
+
+        if 0 <= r < 3 and 0 <= c < 3:
+            new_pos = r * 3 + c
+            new_state = list(state)
+            new_state[pos], new_state[new_pos] = \
+                new_state[new_pos], new_state[pos]
+            result.append(tuple(new_state))
+
+    return result
+
+
+def hill_climbing(start, goal):
+    current = start
+
+    while True:
+        print(current, "Heuristic:", heuristic(current, goal))
+
+        if current == goal:
+            print("Goal reached!")
+            return
+
+        current_h = heuristic(current, goal)
+        best = current
+
+        for state in neighbors(current):
+            if heuristic(state, goal) < current_h:
+                current_h = heuristic(state, goal)
+                best = state
+
+        if best == current:
+            print("No better state available. Stopped!")
+            return
+
+        current = best
+
+
+start = (1, 2, 3,
+         4, 5, 6,
+         7, 0, 8)
+
+goal = (1, 2, 3,
+        4, 0, 5,
+        7, 8, 6)
+
+OUTPUT:
+(1, 2, 3, 4, 5, 6, 7, 0, 8) Heuristic: 3
+(1, 2, 3, 4, 5, 6, 7, 8, 0) Heuristic: 2
+(1, 2, 3, 4, 5, 0, 7, 8, 6) Heuristic: 1
+(1, 2, 3, 4, 0, 5, 7, 8, 6) Heuristic: 0
+Goal reached!
+
+hill_climbing(start, goal)
