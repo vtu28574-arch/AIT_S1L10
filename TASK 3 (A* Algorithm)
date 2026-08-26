@@ -1,0 +1,89 @@
+Aim : To implement A* Algorithm in Python
+
+Program :
+def a_star(graph, h, start, goal):
+
+    open_list = {start}
+    closed_list = set()
+
+    g = {start: 0}
+    parent = {start: None}
+
+    while open_list:
+
+        # Select node with lowest f(n)
+        current = min(open_list,
+                      key=lambda n: g[n] + h[n])
+
+        # Goal reached
+        if current == goal:
+            path = []
+
+            while current is not None:
+                path.append(current)
+                current = parent[current]
+
+            path.reverse()
+            return path
+
+        # Move current node to closed list
+        open_list.remove(current)
+        closed_list.add(current)
+
+        # Generate successor nodes
+        for neighbour, cost in graph[current]:
+
+            new_g = g[current] + cost
+
+            if neighbour in closed_list:
+                continue
+
+            if neighbour not in open_list or new_g < g.get(neighbour, float('inf')):
+                g[neighbour] = new_g
+                parent[neighbour] = current
+                open_list.add(neighbour)
+
+    return None
+
+
+# Graph
+graph = {
+    'A': [('B', 2), ('C', 3)],
+    'B': [('A', 2), ('D', 2)],
+    'C': [('A', 3), ('D', 2), ('E', 3)],
+    'D': [('B', 2), ('C', 2), ('G', 2)],
+    'E': [('C', 3), ('G', 4)],
+    'G': [('D', 2), ('E', 4)]
+}
+
+# Heuristic values
+h = {
+    'A': 6,
+    'B': 6,
+    'C': 4,
+    'D': 3,
+    'E': 1,
+    'G': 0
+}
+
+# Input
+start = 'A'
+goal = 'G'
+
+# A* search
+path = a_star(graph, h, start, goal)
+
+# Output
+print("Input:")
+print("Start node:", start)
+print("Goal node:", goal)
+
+print("\nOutput:")
+print("Optimal path:", " -> ".join(path))
+
+Input:
+Start node: A
+Goal node: G
+
+Output:
+Optimal path: A -> C -> D -> G
